@@ -4,8 +4,7 @@ on:
   create
 
 jobs:
-  tag-created:
-    
+  build-and-publish:
     runs-on: windows-latest
     steps:
       - name: Checkout repository
