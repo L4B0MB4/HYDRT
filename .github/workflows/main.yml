@@ -3,6 +3,8 @@ name: Build and publish
 on:
   push
 
+permissions:
+  contents: write
 jobs:
   build-and-publish:
     runs-on: windows-latest
