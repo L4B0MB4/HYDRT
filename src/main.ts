@@ -3,6 +3,9 @@ import { app, BrowserWindow, Menu, Tray } from "electron";
 import started from "electron-squirrel-startup";
 import path from "node:path";
 
+import { updateElectronApp } from "update-electron-app";
+updateElectronApp(); // additional configuration options available
+
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit();

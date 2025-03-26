@@ -11,6 +11,9 @@
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx ."
   },
+  "repository": {
+    "url": "https://github.com/L4B0MB4/HYDRT"
+  },
   "keywords": [],
   "author": {
     "name": "L4B0MB4",
@@ -40,6 +43,7 @@
     "react-dom": "^19.0.0",
     "ts-node": "^10.9.2",
     "typescript": "~4.5.4",
+    "update-electron-app": "^3.1.1",
     "vite": "^5.4.15"
   },
   "dependencies": {
