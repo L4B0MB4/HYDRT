@@ -23,7 +23,7 @@ jobs:
         run: yarn package
 
       - name: Set Tag as Version
-        if: github.event.ref_type == 'tag'
+        if: startsWith(github.ref, 'refs/tags/')
         id: set_tag
         shell: powershell
         run: |
@@ -32,5 +32,5 @@ jobs:
           $packageJson.version = $tag
           $packageJson | ConvertTo-Json -Depth 10 | Set-Content package.json
       - name: Publish package
-        if: github.event.ref_type == 'tag'
+        if: startsWith(github.ref, 'refs/tags/')
         run: yarn run publish
