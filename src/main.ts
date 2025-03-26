@@ -13,14 +13,17 @@ if (started) {
 
 console.log(process.env.NODE_ENV);
 
-//auto-start
-app.setLoginItemSettings({
-  path: app.getPath("exe"),
-});
+const getAssetPath = (partialPath: string) => {
+  if (process.env.NODE_ENV == "development") {
+    return partialPath;
+  } else {
+    return path.join(process.resourcesPath, partialPath);
+  }
+};
 
 let tray = null;
 app.whenReady().then(() => {
-  tray = new Tray("./icon.png");
+  tray = new Tray(getAssetPath("./images/icon.png"));
   const contextMenu = Menu.buildFromTemplate([
     { label: "Item1", type: "radio" },
     { label: "Item2", type: "radio" },
@@ -50,6 +53,7 @@ const createWindow = () => {
       preload: path.join(__dirname, "preload.js"),
     },
   });
+  mainWindow.setMenu(null);
 
   // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
