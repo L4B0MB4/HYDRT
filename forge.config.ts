@@ -19,6 +19,7 @@ const config: ForgeConfig = {
           owner: "L4B0MB4",
           name: "HYDRT",
         },
+        tagPrefix: "",
         prerelease: true,
       },
     },
