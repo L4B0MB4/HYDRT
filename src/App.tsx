@@ -10,7 +10,7 @@ export const App = () => {
   const fullImageLink = `http://localhost:7251/static/memes/${currentImage}`;
   return (
     <div>
-      <img alt="" src={fullImageLink} />
+      <img style={{ width: "80vw" }} alt="" src={fullImageLink} />
     </div>
   );
 };
