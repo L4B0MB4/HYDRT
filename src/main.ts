@@ -1,7 +1,12 @@
-import { CronJob } from "cron";
+import cors from "cors";
 import { app, BrowserWindow, Menu, Tray } from "electron";
 import started from "electron-squirrel-startup";
+import fs from "fs";
 import path from "node:path";
+
+import express from "express";
+const server = express();
+const port = 7251;
 
 import { updateElectronApp } from "update-electron-app";
 updateElectronApp(); // additional configuration options available
@@ -15,15 +20,30 @@ console.log(process.env.NODE_ENV);
 
 const getAssetPath = (partialPath: string) => {
   if (process.env.NODE_ENV == "development") {
-    return partialPath;
+    return path.join(process.cwd(), partialPath);
   } else {
     return path.join(process.resourcesPath, partialPath);
   }
 };
 
-let tray = null;
+server.use(cors());
+
+server.get("/api/memes", (req: express.Request, res: express.Response) => {
+  var path = getAssetPath("images/memes");
+  fs.readdir(path, (err, files) => {
+    if (!err) {
+      res.send({ memes: files });
+    }
+  });
+});
+server.use("/static", express.static(getAssetPath("images")));
+
+server.listen(port, "localhost", () => {
+  console.log(`Server listening on port ${port}`);
+});
+
 app.whenReady().then(() => {
-  tray = new Tray(getAssetPath("./images/icon.png"));
+  const tray = new Tray(getAssetPath("./images/icon.png"));
   const contextMenu = Menu.buildFromTemplate([
     { label: "Item1", type: "radio" },
     { label: "Item2", type: "radio" },
@@ -67,8 +87,8 @@ const createWindow = () => {
   }
 };
 
-const job = new CronJob(
-  "*/10 * * * * *",
+/* const job = new CronJob(
+  "0 * * * * *",
   function () {
     job.stop();
     var secondsRandomize = (Math.random() * 100) % 20;
@@ -83,7 +103,7 @@ const job = new CronJob(
   null,
   true,
   "Europe/Berlin"
-);
+); */
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
