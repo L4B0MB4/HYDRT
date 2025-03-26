@@ -1,0 +1,40 @@
+name: Build and publish
+
+on:
+  push
+
+permissions:
+  contents: write
+jobs:
+  build-and-publish:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build project
+        run: yarn package
+
+      - name: Set Tag as Version
+        if: startsWith(github.ref, 'refs/tags/')
+        id: set_tag
+        shell: powershell
+        run: |
+          $tag = "${{ github.ref }}" -replace 'refs/tags/', ''
+          $packageJson = Get-Content package.json | ConvertFrom-Json
+          $packageJson.version = $tag
+          $packageJson | ConvertTo-Json -Depth 10 | Set-Content package.json
+      - name: Publish package
+        if: startsWith(github.ref, 'refs/tags/')
+        run: yarn run publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
