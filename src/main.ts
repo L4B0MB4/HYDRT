@@ -11,6 +11,7 @@ import { readOrCreateConfigFile } from "./configFile";
 import { showWindow } from "./showWindow";
 
 import express from "express";
+import { showNotification } from "./notification";
 const server = express();
 const port = 7251;
 try {
@@ -69,18 +70,15 @@ try {
     tray.setToolTip("This is my application.");
     tray.setContextMenu(contextMenu);
   });
-
-  setTimeout(() => {
-    const job = new CronJob(
-      settings.cronSetting,
-      function () {
-        showWindow();
-      },
-      null,
-      true,
-      "Europe/Berlin"
-    );
-  }, 10000);
+  const job = new CronJob(
+    settings.cronSetting,
+    function () {
+      showNotification();
+    },
+    null,
+    true,
+    "Europe/Berlin"
+  );
 
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
