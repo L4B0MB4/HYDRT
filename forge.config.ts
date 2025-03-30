@@ -22,7 +22,6 @@ const config: ForgeConfig = {
           name: "HYDRT",
         },
         tagPrefix: "",
-        prerelease: true,
       },
     },
   ],
