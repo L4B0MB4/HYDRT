@@ -1,23 +1,24 @@
 import { app } from "electron";
 import started from "electron-squirrel-startup";
-import { logger } from "./backend/customLogger";
+import { updateElectronApp } from "update-electron-app";
+updateElectronApp(); // additional configuration options available
+
+// Handle creating/removing shortcuts on Windows when installing/uninstalling.
+if (started) {
+  app.quit();
+}
 
 import { CronJob } from "cron";
-import { updateElectronApp } from "update-electron-app";
 import { readOrCreateConfigFile } from "./backend/configFile";
+import { logger } from "./backend/customLogger";
 
 import { showAppTray } from "./backend/appTray";
 import { showNotification } from "./backend/notification";
 import { initServer } from "./backend/server";
+
 try {
   const settings = readOrCreateConfigFile();
   logger.info("starting app");
-  updateElectronApp(); // additional configuration options available
-
-  // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-  if (started) {
-    app.quit();
-  }
 
   logger.info(process.env.NODE_ENV);
 
