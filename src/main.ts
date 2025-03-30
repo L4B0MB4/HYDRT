@@ -48,10 +48,10 @@ try {
   try {
     server.listen(port, "localhost", () => {
       //<--- this needs a try catch in case the app is started twice when autoupdating
-      console.log(`Server listening on port ${port}`);
+      logger.info(`Server listening on port ${port}`);
     });
   } catch (err) {
-    console.error(err);
+    logger.error(err);
   }
   app.whenReady().then(() => {
     const tray = new Tray(getAssetPath("./images/icon.png"));

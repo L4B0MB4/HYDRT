@@ -12,5 +12,8 @@ export const logger = winston.createLogger({
     new winston.transports.File({
       filename: path.join(homedir, ".hydrtlogs/hydrt.log"),
     }),
+    new winston.transports.Console({
+      format: winston.format.simple(),
+    }),
   ],
 });
