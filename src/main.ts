@@ -26,6 +26,7 @@ try {
   app.whenReady().then(() => {
     showAppTray(app);
   });
+  app.setAppUserModelId("com.hyrdt.me");
 
   const job = new CronJob(
     settings.cronSetting,

@@ -5,6 +5,8 @@ export const showNotification = () => {
   const notification = new Notification({
     title: "Hey, hast du was getrunken ? 💧",
     body: "Dann klick hier für ein Meme als Belohnung",
+    silent: true,
+    timeoutType: "never",
   });
 
   notification.show();

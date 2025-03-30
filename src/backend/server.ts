@@ -18,8 +18,8 @@ export const initServer = () => {
       if (!err) {
         let unseenFiles = files.filter((x) => !seenMemes.seenMemes.includes(x));
         if (unseenFiles.length > 0) {
-          res.send({ memes: [files[0]] });
-          AddSeenMeme(files[0]);
+          res.send({ memes: [unseenFiles[0]] });
+          AddSeenMeme(unseenFiles[0]);
         } else {
           const randomIndex = randomInt(unseenFiles.length - 1);
           res.send({ memes: [files[randomIndex]] });
