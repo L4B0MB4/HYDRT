@@ -15,6 +15,6 @@ export const showAppTray = (app: App) => {
       },
     },
   ]);
-  tray.setToolTip("This is my application.");
+  tray.setToolTip("HYDRT");
   tray.setContextMenu(contextMenu);
 };

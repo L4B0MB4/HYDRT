@@ -1,6 +1,8 @@
 import cors from "cors";
+import { randomInt } from "crypto";
 import express, { Request, Response } from "express";
 import fs from "fs";
+import { AddSeenMeme, readOrCreateSeenMemesFile } from "./configFile";
 import { logger } from "./customLogger";
 import { getAssetPath } from "./paths";
 
@@ -10,10 +12,18 @@ export const initServer = () => {
   server.use(cors());
 
   server.get("/api/memes", (req: Request, res: Response) => {
+    const seenMemes = readOrCreateSeenMemesFile();
     var path = getAssetPath("images/memes");
     fs.readdir(path, (err, files) => {
       if (!err) {
-        res.send({ memes: files });
+        let unseenFiles = files.filter((x) => !seenMemes.seenMemes.includes(x));
+        if (unseenFiles.length > 0) {
+          res.send({ memes: [files[0]] });
+          AddSeenMeme(files[0]);
+        } else {
+          const randomIndex = randomInt(unseenFiles.length - 1);
+          res.send({ memes: [files[randomIndex]] });
+        }
       }
     });
   });
