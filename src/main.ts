@@ -1,5 +1,5 @@
 import cors from "cors";
-import { app, BrowserWindow, Menu, Tray } from "electron";
+import { app, Menu, Tray } from "electron";
 import started from "electron-squirrel-startup";
 import fs from "fs";
 import path from "node:path";
@@ -8,7 +8,12 @@ import express from "express";
 const server = express();
 const port = 7251;
 
+const settings = readOrCreateConfigFile();
+
+import { CronJob } from "cron";
 import { updateElectronApp } from "update-electron-app";
+import { readOrCreateConfigFile } from "./configFile";
+import { showWindow } from "./showWindow";
 updateElectronApp(); // additional configuration options available
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -38,19 +43,18 @@ server.get("/api/memes", (req: express.Request, res: express.Response) => {
 });
 server.use("/static", express.static(getAssetPath("images")));
 
-server.listen(port, "localhost", () => {
-  console.log(`Server listening on port ${port}`);
-});
-
+try {
+  server.listen(port, "localhost", () => {
+    //<--- this needs a try catch in case the app is started twice when autoupdating
+    console.log(`Server listening on port ${port}`);
+  });
+} catch (err) {
+  console.error(err);
+}
 app.whenReady().then(() => {
   const tray = new Tray(getAssetPath("./images/icon.png"));
   const contextMenu = Menu.buildFromTemplate([
-    { label: "Item1", type: "radio" },
-    { label: "Item2", type: "radio" },
-    { label: "Item3", type: "radio", checked: true },
-    { label: "Item4", type: "radio" },
-    { type: "separator" },
-    { label: "Zeig mir ein Meme", type: "normal", click: () => createWindow() },
+    { label: "Zeig mir ein Meme", type: "normal", click: () => showWindow() },
     { type: "separator" },
     {
       label: "Schließen",
@@ -64,46 +68,15 @@ app.whenReady().then(() => {
   tray.setContextMenu(contextMenu);
 });
 
-const createWindow = () => {
-  // Create the browser window.
-  const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
-    },
-  });
-  mainWindow.setMenu(null);
-
-  // and load the index.html of the app.
-  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-    mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
-    // Open the DevTools.
-    mainWindow.webContents.openDevTools();
-  } else {
-    mainWindow.loadFile(
-      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
-    );
-  }
-};
-
-/* const job = new CronJob(
-  "0 * * * * *",
+const job = new CronJob(
+  settings.cronSetting,
   function () {
-    job.stop();
-    var secondsRandomize = (Math.random() * 100) % 20;
-    setTimeout(() => {
-      job.start();
-      createWindow();
-      console.log(
-        "You will see this message whenever " + new Date().toISOString()
-      );
-    }, secondsRandomize * 1000);
+    showWindow();
   },
   null,
   true,
   "Europe/Berlin"
-); */
+);
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
