@@ -1,5 +1,5 @@
 import { Notification } from "electron";
-import { showWindow } from "./showWindow";
+import { showWindow } from "../showWindow";
 
 export const showNotification = () => {
   const notification = new Notification({
