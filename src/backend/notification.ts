@@ -14,4 +14,5 @@ export const showNotification = () => {
   notification.on("click", () => {
     showWindow();
   });
+  console.log("check if autoupdate works :)");
 };
