@@ -7,6 +7,7 @@ export const showNotification = () => {
     body: "Dann klick hier für ein Meme als Belohnung",
     silent: true,
     timeoutType: "never",
+    urgency: "critical",
   });
 
   notification.show();
